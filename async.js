@@ -12,8 +12,7 @@ exports.runParallel = runParallel;
  */
 function runParallel(jobs, parallelNum, timeout = 1000) {
     // асинхронная магия
-    let queueOfJobs;
-    queueOfJobs = jobs
+    let queueOfJobs = jobs
         .map(_timer(timeout))
         .map((__element, __index) => [__element, __index]);
     let __res = [];
@@ -22,16 +21,17 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
     function allRes(resolve, jobRes, jobIndex) {
         __res[jobIndex] = jobRes;
         ++__countFinished;
-        if (jobs.length === __countFinished) {
+        if (jobs.length === __res.length) {
             resolve(__res);
         } else if (queueOfJobs.length) {
-            resolveJobs(resolve, ... queueOfJobs.shift());
+            resolveJobs(resolve, ...queueOfJobs.shift());
         }
     }
 
     function resolveJobs(resolve, job, i) {
         let handler = jobResult => allRes(resolve, jobResult, i);
-        job()
+
+        return job()
             .then(handler)
             .catch(handler);
     }
@@ -39,8 +39,7 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
     return new Promise(resolve => {
         let queue;
         if (parallelNum > 0 && jobs.length) {
-            queue = queueOfJobs.splice(parallelNum);
-            queueOfJobs.splice(parallelNum);
+            queue = queueOfJobs.splice(0, parallelNum);
             queue
                 .forEach(([__element, __index]) => resolveJobs(resolve, __element, __index));
         } else {
@@ -53,7 +52,6 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
 function _timer(timeout) {
     return jobs => () => new Promise((resolve, reject) =>{
         jobs()
-            .catch(reject)
             .then(resolve)
             .catch(reject);
         setTimeout(() => reject(new Error('run out of time')), timeout);
