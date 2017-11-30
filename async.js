@@ -2,7 +2,7 @@
 /* eslint-disable */
 
 
-exports.isStar = false;
+exports.isStar = true;
 exports.runParallel = runParallel;
 
 /** Функция паралелльно запускает указанное число промисов
@@ -13,6 +13,7 @@ exports.runParallel = runParallel;
 function runParallel(jobs, parallelNum, timeout = 1000) {
     // асинхронная магия
     let queueOfJobs = jobs
+        .map(_timer(timeout))
         .map((__element, __index) => [__element, __index]);
     let __res = [];
     let __countFinished = 0;
