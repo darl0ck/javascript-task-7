@@ -32,7 +32,6 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
     function resolveJobs(resolve, job, i) {
         let handler = jobResult => allRes(resolve, jobResult, i);
         job()
-            .catch(handler)
             .then(handler)
             .catch(handler);
     }
