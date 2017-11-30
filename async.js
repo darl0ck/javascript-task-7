@@ -13,7 +13,6 @@ exports.runParallel = runParallel;
 function runParallel(jobs, parallelNum, timeout = 1000) {
     // асинхронная магия
     let queueOfJobs = jobs
-        .map(_timer(timeout))
         .map((__element, __index) => [__element, __index]);
     let __res = [];
     let __countFinished = 0;
@@ -21,7 +20,7 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
     function allRes(resolve, jobRes, jobIndex) {
         __res[jobIndex] = jobRes;
         ++__countFinished;
-        if (jobs.length === __res.length) {
+        if (jobs.length === __countFinished) {
             resolve(__res);
         } else if (queueOfJobs.length) {
             resolveJobs(resolve, ...queueOfJobs.shift());
