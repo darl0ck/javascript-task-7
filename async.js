@@ -2,7 +2,7 @@
 /* eslint-disable */
 
 
-exports.isStar = true;
+exports.isStar = false;
 exports.runParallel = runParallel;
 
 /** Функция паралелльно запускает указанное число промисов
@@ -54,6 +54,6 @@ function _timer(timeout) {
         jobs()
             .then(resolve)
             .catch(reject);
-        setTimeout(() => reject(new Error('run out of time')), timeout);
+        setTimeout(() => reject(new Error('Promise timeout')), timeout);
     });
 }
