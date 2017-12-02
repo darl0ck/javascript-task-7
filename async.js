@@ -8,6 +8,7 @@ exports.runParallel = runParallel;
  * @param {Array} jobs – функции, которые возвращают промисы
  * @param {Number} parallelNum - число одновременно исполняющихся промисов
  * @param {Number} timeout - таймаут работы промиса
+ * @returns {Promise}
  */
 function runParallel(jobs, parallelNum, timeout = 1000) {
     // асинхронная магия
@@ -48,7 +49,7 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
 }
 
 
-function _timer(timeout) {
+function timer(timeout) {
     return jobs => () => new Promise((resolve, reject) =>{
         jobs()
             .then(resolve)
