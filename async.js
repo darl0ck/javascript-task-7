@@ -1,5 +1,4 @@
 'use strict';
-/* eslint-disable */
 
 
 exports.isStar = true;
