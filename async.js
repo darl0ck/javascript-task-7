@@ -12,16 +12,16 @@ exports.runParallel = runParallel;
 function runParallel(jobs, parallelNum, timeout = 1000) {
     // асинхронная магия
     let queueOfJobs = jobs
-        .map(_timer(timeout))
-        .map((__element, __index) => [__element, __index]);
-    let __res = [];
-    let __countFinished = 0;
+        .map(timer(timeout))
+        .map((element, index) => [element, index]);
+    let res = [];
+    let countFinished = 0;
 
     function allRes(resolve, jobRes, jobIndex) {
-        __res[jobIndex] = jobRes;
-        ++__countFinished;
-        if (jobs.length === __countFinished) {
-            resolve(__res);
+        res[jobIndex] = jobRes;
+        ++countFinished;
+        if (jobs.length === countFinished) {
+            resolve(res);
         } else if (queueOfJobs.length) {
             resolveJobs(resolve, ...queueOfJobs.shift());
         }
@@ -40,9 +40,9 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
         if (parallelNum > 0 && jobs.length) {
             queue = queueOfJobs.splice(0, parallelNum);
             queue
-                .forEach(([__element, __index]) => resolveJobs(resolve, __element, __index));
+                .forEach(([element, index]) => resolveJobs(resolve, element, index));
         } else {
-            resolve(__res);
+            resolve(res);
         }
     });
 }
